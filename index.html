@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Khí hậu gà">
+<meta name="theme-color" content="#0e1a17">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-192.png"><rect width="100" height="100" rx="22" fill="%231f9e79"/><g fill="%230e1a17"><rect x="47" y="26" width="6" height="30" rx="3"/><rect x="35" y="47" width="30" height="6" rx="3"/></g></svg>'>
+<title>Tiểu khí hậu chuồng gà — Mobile</title>
+<style>
+  :root{
+    --bg:#0e1a17;--panel:#14231f;--panel2:#1b2f29;--line:#274038;
+    --ink:#eaf3ef;--muted:#8fb0a5;--dim:#5f7d74;
+    --accent:#3ddc97;--accent2:#7fd6ff;--amber:#f4c04e;--short:#f0685f;
+    --mono:ui-monospace,"Cascadia Code","Roboto Mono",Menlo,monospace;
+    --sans:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    --safe:env(safe-area-inset-bottom,0px);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;padding:0}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:16px;line-height:1.5;
+    -webkit-font-smoothing:antialiased;padding-bottom:calc(66px + var(--safe))}
+  header.top{position:sticky;top:0;z-index:20;background:rgba(14,26,23,.92);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);padding:calc(env(safe-area-inset-top,0px) + 10px) 14px 10px;
+    display:flex;align-items:center;gap:10px}
+  .logo{width:30px;height:30px;border-radius:8px;flex:0 0 auto;background:linear-gradient(150deg,#3ddc97,#1f9e79);position:relative}
+  .logo::before,.logo::after{content:"";position:absolute;left:50%;top:50%;background:#0e1a17;border-radius:2px}
+  .logo::before{width:3px;height:13px;transform:translate(-50%,-50%)}
+  .logo::after{width:13px;height:3px;transform:translate(-50%,-50%)}
+  header.top h1{font-size:15px;margin:0;font-weight:650;letter-spacing:.2px}
+  header.top .sub{font-size:11px;color:var(--muted)}
+
+  .agebar{position:sticky;top:52px;z-index:15;background:var(--panel);border-bottom:1px solid var(--line);
+    padding:10px 14px;display:flex;align-items:center;gap:12px}
+  .agebar input[type=range]{flex:1;accent-color:var(--accent);height:26px}
+  .agebadge{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--accent);min-width:78px;text-align:right}
+  .agebadge small{font-size:11px;color:var(--dim);font-weight:500}
+  #ageAuto{font-size:10.5px;color:var(--dim);font-family:var(--mono);padding:0 14px 8px;background:var(--panel);
+    border-bottom:1px solid var(--line);position:sticky;top:100px;z-index:14}
+
+  main{padding:14px 14px 24px}
+  .panel{display:none}
+  .panel.active{display:block;animation:fade .2s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:14px}
+  .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin:0 0 10px}
+
+  details.acc{background:var(--panel);border:1px solid var(--line);border-radius:14px;margin-bottom:12px;overflow:hidden}
+  details.acc>summary{list-style:none;cursor:pointer;padding:14px;font-weight:600;font-size:14.5px;
+    display:flex;justify-content:space-between;align-items:center}
+  details.acc>summary::-webkit-details-marker{display:none}
+  details.acc>summary::after{content:"▾";color:var(--dim);transition:transform .2s}
+  details.acc[open]>summary::after{transform:rotate(180deg)}
+  details.acc .body{padding:0 14px 14px}
+
+  .field{margin-bottom:12px}
+  .field:last-child{margin-bottom:0}
+  label.lbl{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:var(--muted);margin-bottom:6px;gap:8px}
+  label.lbl .u{font-family:var(--mono);font-size:11px;color:var(--dim)}
+  input[type=number],select{width:100%;background:#0c1613;border:1px solid var(--line);color:var(--ink);
+    border-radius:10px;padding:12px 12px;font-size:16px;font-family:var(--mono)}
+  input[type=number]:focus,select:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+  input[readonly]{background:#0f1c18;color:var(--muted);border-style:dashed}
+  input[readonly]:focus{outline:none;border-color:var(--line)}
+  .wxbtn{width:100%;background:var(--accent2);color:#08150f;border:none;border-radius:10px;padding:12px 14px;
+    font-size:15px;font-weight:650;font-family:var(--sans);margin-top:6px;display:flex;align-items:center;justify-content:center;gap:8px}
+  .wxbtn:active{filter:brightness(.9)}
+  .wxbtn:disabled{opacity:.6}
+  .wxstat{font-size:11.5px;color:var(--dim);margin-top:8px;line-height:1.5}
+  .wxstat.ok{color:var(--accent)}
+  .wxstat.err{color:var(--amber)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+  .kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .kpi{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px}
+  .kpi .t{font-size:11px;color:var(--muted);margin-bottom:6px;min-height:30px}
+  .kpi .v{font-family:var(--mono);font-size:21px;font-weight:700;line-height:1}
+  .kpi .v small{font-size:11px;color:var(--dim);font-weight:500}
+
+  .demand{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .dbox{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px}
+  .dbox h4{margin:0 0 4px;font-size:12px;color:var(--muted);font-weight:600}
+  .dbox .big{font-family:var(--mono);font-size:15px;font-weight:700}
+  .dbox .cap{font-size:10.5px;color:var(--dim);margin-top:3px}
+  .dbox.gov{outline:1.5px solid var(--accent);box-shadow:0 0 0 4px rgba(61,220,151,.08)}
+  .taglet{display:inline-block;font-family:var(--mono);font-size:9px;letter-spacing:1px;text-transform:uppercase;
+    padding:2px 7px;border-radius:20px;margin-top:8px;background:rgba(61,220,151,.14);color:var(--accent)}
+
+  .meterwrap{margin-top:14px}
+  .meterhead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
+  .meterhead .lab{font-size:12px;color:var(--muted)}
+  .meterhead .pct{font-family:var(--mono);font-size:18px;font-weight:700}
+  .track{height:14px;border-radius:8px;background:#0c1613;border:1px solid var(--line);overflow:hidden}
+  .fill{height:100%;width:0;border-radius:7px;transition:width .5s ease}
+  .ticks{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:4px}
+
+  .reco{border-left:4px solid var(--accent);padding:14px;border-radius:12px;background:linear-gradient(180deg,rgba(61,220,151,.07),transparent);margin-top:4px}
+  .reco.mode-amber{border-color:var(--amber);background:linear-gradient(180deg,rgba(244,192,78,.08),transparent)}
+  .reco.mode-red{border-color:var(--short);background:linear-gradient(180deg,rgba(240,104,95,.08),transparent)}
+  .reco .mode{font-family:var(--mono);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+  .reco .head{font-size:17px;font-weight:680;margin:5px 0 2px}
+  .reco .detail{font-size:13.5px}
+  .reco .detail b{color:var(--accent)}
+  .reco.mode-amber .detail b{color:var(--amber)}
+  .reco.mode-red .detail b{color:var(--short)}
+  .hzrow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+  .hzcell{background:#0c1613;border:1px solid var(--line);border-radius:10px;padding:9px 13px;flex:1 1 40%}
+  .hzcell .l{font-size:10px;color:var(--muted)}
+  .hzcell .n{font-family:var(--mono);font-size:20px;font-weight:700;line-height:1.15}
+  .hzcell .n small{font-size:12px;color:var(--dim)}
+  .altbox{margin-top:14px;display:grid;grid-template-columns:1fr;gap:10px}
+  .alt{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px}
+  .alt .k{font-family:var(--mono);font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);margin-bottom:6px}
+  .alt .txt{font-size:13px}
+  .alt .txt b{font-family:var(--mono)}
+
+  .rossgrid{display:grid;grid-template-columns:1fr;gap:12px}
+  .rossitem{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:13px}
+  .rossitem .t{font-size:11.5px;color:var(--muted);margin-bottom:6px}
+  .rossitem .v{font-family:var(--mono);font-size:19px;font-weight:700}
+  .rossitem .v small{font-size:12px;color:var(--dim);font-weight:500}
+  .applybtn{margin-top:9px;background:var(--accent);color:#08150f;border:none;border-radius:9px;
+    padding:10px 14px;font-size:14px;font-weight:650;font-family:var(--sans);width:100%}
+  .applybtn:active{filter:brightness(.92)}
+  .limits{font-size:12px;color:var(--muted);margin-top:12px;line-height:1.8}
+  .limits b{color:var(--ink);font-family:var(--mono)}
+
+  svg{display:block;width:100%;height:auto}
+  .chartcaption{font-size:11px;color:var(--muted);margin-top:6px;text-align:center}
+  table{width:100%;border-collapse:collapse;margin-top:8px;font-size:12px}
+  th,td{padding:7px 6px;text-align:right;border-bottom:1px solid var(--line);font-family:var(--mono)}
+  th{color:var(--muted);font-weight:600;font-size:10px;text-transform:uppercase;letter-spacing:.4px}
+  th:first-child,td:first-child{text-align:left}
+  tr.hl td{background:rgba(61,220,151,.10);color:var(--accent)}
+
+  .warn{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:10px;font-size:13px;margin-top:8px;border:1px solid var(--line)}
+  .warn .ic{font-family:var(--mono);font-weight:700;flex:0 0 auto}
+  .warn.w-red{background:rgba(240,104,95,.09);border-color:rgba(240,104,95,.35)}
+  .warn.w-red .ic{color:var(--short)}
+  .warn.w-amber{background:rgba(244,192,78,.08);border-color:rgba(244,192,78,.3)}
+  .warn.w-amber .ic{color:var(--amber)}
+  .warn.w-ok{background:rgba(61,220,151,.07);border-color:rgba(61,220,151,.3)}
+  .warn.w-ok .ic{color:var(--accent)}
+  .hint{font-size:11px;color:var(--dim);margin-top:2px}
+
+  nav.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;display:grid;grid-template-columns:repeat(4,1fr);
+    background:rgba(20,35,31,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);
+    padding-bottom:var(--safe)}
+  nav.tabbar button{background:none;border:none;color:var(--dim);font-family:var(--sans);font-size:10.5px;
+    padding:9px 2px 8px;display:flex;flex-direction:column;align-items:center;gap:3px}
+  nav.tabbar button .i{font-size:19px;line-height:1}
+  nav.tabbar button.on{color:var(--accent)}
+  .instbanner{background:var(--panel2);border:1px dashed var(--line);border-radius:12px;padding:12px;font-size:12.5px;color:var(--muted);margin-bottom:14px}
+  .instbanner b{color:var(--ink)}
+</style>
+</head>
+<body>
+<noscript><div style="background:#f0685f;color:#0e1a17;padding:14px 16px;font-family:system-ui,Arial,sans-serif;font-size:15px;font-weight:600;text-align:center">⚠️ Ứng dụng cần JavaScript. Hãy mở tệp này bằng trình duyệt (Safari/Chrome) — không dùng cửa sổ xem trước của Zalo/Drive/Files.</div></noscript>
+<header class="top">
+  <div class="logo"></div>
+  <div><h1>Tiểu khí hậu chuồng gà</h1><div class="sub">Thông thoáng · quạt · sưởi · phân phối gió</div></div>
+</header>
+
+<div class="agebar">
+  <input id="in-age" type="range" min="1" max="42" value="21">
+  <span class="agebadge"><span id="ageBadge">21</span><small> ngày</small></span>
+</div>
+<div id="ageAuto"></div>
+
+<main>
+  <!-- ============ TAB: NHẬP ============ -->
+  <section id="tab-input" class="panel active">
+    <div class="instbanner">📲 <b>Cài ra màn hình chính:</b> mở bằng Safari/Chrome → nút Chia sẻ → <b>“Thêm vào MH chính”</b> để dùng như app, chạy offline.</div>
+
+    <details class="acc" open><summary>Chuồng & đàn gà</summary><div class="body">
+      <div class="row2">
+        <div class="field"><label class="lbl">Rộng <span class="u">m</span></label><input id="in-w" type="number" inputmode="decimal" value="13" step="0.5"></div>
+        <div class="field"><label class="lbl">Cao <span class="u">m</span></label><input id="in-h" type="number" inputmode="decimal" value="2.1" step="0.1"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label class="lbl">Dài <span class="u">m</span></label><input id="in-l" type="number" inputmode="decimal" value="120" step="1"></div>
+        <div class="field"><label class="lbl">Số gà <span class="u">con</span></label><input id="in-n" type="number" inputmode="numeric" value="18000" step="100"></div>
+      </div>
+    </div></details>
+
+    <details class="acc" open><summary>Mục tiêu theo ngày tuổi</summary><div class="body">
+      <div class="row2">
+        <div class="field"><label class="lbl">Nhiệt mục tiêu <span class="u">°C</span></label><input id="in-tin" type="number" inputmode="decimal" step="0.5" value="25.5" readonly></div>
+        <div class="field"><label class="lbl">Ẩm mục tiêu <span class="u">%</span></label><input id="in-hin" type="number" inputmode="numeric" step="1" value="75" readonly></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label class="lbl">Trọng lượng <span class="u">g</span></label><input id="in-wt" type="number" inputmode="numeric" step="1" value="985" readonly></div>
+        <div class="field"><label class="lbl">Lượng ăn <span class="u">g/ngày</span></label><input id="in-fd" type="number" inputmode="numeric" step="1" value="108" readonly></div>
+      </div>
+      <div class="hint">Cố định theo ngày tuổi — đây là mục tiêu hướng đến, không sửa tay.</div>
+    </div></details>
+
+    <details class="acc" open><summary>Trong trại (thực đo) & ngoài trời</summary><div class="body">
+      <div class="row2">
+        <div class="field"><label class="lbl">Trong trại nhiệt <span class="u">°C</span></label><input id="in-tinm" type="number" inputmode="decimal" value="28" step="0.5"></div>
+        <div class="field"><label class="lbl">Trong trại ẩm <span class="u">%</span></label><input id="in-hinm" type="number" inputmode="numeric" value="70" step="1"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label class="lbl">Ngoài trời nhiệt <span class="u">°C</span></label><input id="in-tout" type="number" inputmode="decimal" value="16" step="0.5"></div>
+        <div class="field"><label class="lbl">Ngoài trời ẩm <span class="u">%</span></label><input id="in-hout" type="number" inputmode="numeric" value="80" step="1"></div>
+      </div>
+      <button class="wxbtn" id="wx-btn">📍 Lấy thời tiết theo GPS</button>
+      <div class="wxstat" id="wx-status">Tự lấy theo vị trí khi mở app (Open-Meteo). Bấm để làm mới.</div>
+    </div></details>
+
+    <details class="acc"><summary>Hệ thống quạt</summary><div class="body">
+      <div class="row2">
+        <div class="field"><label class="lbl">Số quạt <span class="u">cái</span></label><input id="in-fans" type="number" inputmode="numeric" value="10" step="1"></div>
+        <div class="field"><label class="lbl">LL mỗi quạt <span class="u">m³/h</span></label><input id="in-fancap" type="number" inputmode="numeric" value="36000" step="1000"></div>
+      </div>
+      <div class="hint" id="fanTotal"></div>
+    </div></details>
+
+    <details class="acc"><summary>Sưởi & chất đốt (mùa lạnh)</summary><div class="body">
+      <div class="row2">
+        <div class="field"><label class="lbl">Cách nhiệt U <span class="u">W/m²K</span></label><input id="in-u" type="number" inputmode="decimal" value="0.5" step="0.05"></div>
+        <div class="field"><label class="lbl">Nhiệt gà tỏa <span class="u">W/kg</span></label><input id="in-heatkg" type="number" inputmode="decimal" value="6.5" step="0.5"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label class="lbl">Nhiệt trị <span class="u">kWh/kg</span></label><input id="in-cal" type="number" inputmode="decimal" value="12.8" step="0.1"></div>
+        <div class="field"><label class="lbl">Hiệu suất đốt <span class="u">%</span></label><input id="in-eff" type="number" inputmode="numeric" value="90" step="1"></div>
+      </div>
+      <div class="field"><label class="lbl">Giá chất đốt <span class="u">đ/kg</span></label><input id="in-price" type="number" inputmode="numeric" value="0" step="1000"></div>
+    </div></details>
+
+    <details class="acc"><summary>Phân phối gió & inlet</summary><div class="body">
+      <div class="row2">
+        <div class="field"><label class="lbl">Áp đang vận hành <span class="u">Pa</span></label><input id="in-press" type="number" inputmode="numeric" value="25" step="1"></div>
+        <div class="field"><label class="lbl">Khe inlet <span class="u">cm</span></label><input id="in-gap" type="number" inputmode="decimal" value="4" step="0.5"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label class="lbl">Test kín: áp giữ <span class="u">Pa</span></label><input id="in-p0" type="number" inputmode="numeric" value="15" step="1"></div>
+        <div class="field"><label class="lbl">Ngưỡng áp an toàn <span class="u">Pa</span></label><input id="in-pmax" type="number" inputmode="numeric" value="37" step="1"></div>
+      </div>
+      <div class="field"><label class="lbl">LL quạt test <span class="u">m³/h</span></label><input id="in-qtest" type="number" inputmode="numeric" value="36000" step="1000"></div>
+    </div></details>
+
+    <details class="acc"><summary>Thiết kế tunnel & Combi</summary><div class="body">
+      <div class="row2">
+        <div class="field"><label class="lbl">Tốc độ thiết kế <span class="u">m/s</span></label><input id="in-designv" type="number" inputmode="decimal" value="3" step="0.1"></div>
+        <div class="field"><label class="lbl">Gió qua pad <span class="u">m/s</span></label><input id="in-padv" type="number" inputmode="decimal" value="1.5" step="0.05"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label class="lbl">TL xuất chuồng <span class="u">kg/con</span></label><input id="in-sw" type="number" inputmode="decimal" value="2.4" step="0.1"></div>
+        <div class="field"><label class="lbl">CS 1 quạt tunnel <span class="u">m³/h</span></label><input id="in-fanunit" type="number" inputmode="numeric" value="38000" step="1000"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label class="lbl">Loại side inlet <span class="u">m³/h</span></label>
+          <select id="in-inlettype"><option value="1350">135 (1350)</option><option value="1450">145 (1450)</option><option value="2500">2500</option><option value="3000" selected>3000</option></select>
+        </div>
+        <div class="field"><label class="lbl">Ø ống phân phối <span class="u">mm</span></label><input id="in-pipedia" type="number" inputmode="numeric" value="160" step="10"></div>
+      </div>
+    </div></details>
+
+    <details class="acc"><summary>Nâng cao</summary><div class="body">
+      <div class="row2">
+        <div class="field"><label class="lbl">Tỷ lệ nước/ăn</label><input id="in-ratio" type="number" inputmode="decimal" value="1.8" step="0.1"></div>
+        <div class="field"><label class="lbl">Sàn biến tần <span class="u">Hz</span></label><input id="in-hzmin" type="number" inputmode="numeric" value="30" step="1"></div>
+      </div>
+    </div></details>
+  </section>
+
+  <!-- ============ TAB: VẬN HÀNH ============ -->
+  <section id="tab-run" class="panel">
+    <div class="card">
+      <p class="eyebrow">Mục tiêu & quy mô đàn</p>
+      <div class="kpis">
+        <div class="kpi"><div class="t">Trong trại → mục tiêu</div><div class="v" id="k-clim">–</div></div>
+        <div class="kpi"><div class="t">Tổng trọng lượng đàn</div><div class="v" id="k-lw">–</div></div>
+        <div class="kpi"><div class="t">Mật độ nuôi</div><div class="v" id="k-dens">–</div></div>
+        <div class="kpi"><div class="t">Nhiệt độ cảm nhận</div><div class="v" id="k-perc">–</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <p class="eyebrow">Nhu cầu thông thoáng</p>
+      <div class="demand">
+        <div class="dbox" id="box-h2o"><h4>Thải ẩm H₂O</h4><div class="big" id="d-h2o">–</div><div class="cap" id="d-h2o-kg">–</div></div>
+        <div class="dbox" id="box-co2"><h4>Thải khí CO₂</h4><div class="big" id="d-co2">–</div><div class="cap" id="d-co2-kg">–</div></div>
+        <div class="dbox" id="box-cool"><h4>Làm mát chống nóng</h4><div class="big" id="d-cool">–</div><div class="cap" id="d-cool-v">–</div></div>
+        <div class="dbox" id="box-ross"><h4>ROSS min-vent</h4><div class="big" id="d-ross">–</div><div class="cap" id="d-ross-kg">–</div></div>
+      </div>
+      <div class="meterwrap">
+        <div class="meterhead"><span class="lab">Tải quạt so với công suất</span><span class="pct" id="loadpct">–</span></div>
+        <div class="track"><div class="fill" id="loadfill"></div></div>
+        <div class="ticks"><span>0%</span><span>50%</span><span>100%</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <p class="eyebrow">Khuyến cáo chạy quạt</p>
+      <div class="reco" id="reco">
+        <div class="mode" id="reco-mode">–</div>
+        <div class="head" id="reco-head">–</div>
+        <div class="detail" id="reco-detail">–</div>
+        <div class="hzrow" id="reco-hz"></div>
+      </div>
+      <div class="altbox">
+        <div class="alt"><div class="k">Cách 1 · ON/OFF timer</div><div class="txt" id="alt-onoff">–</div></div>
+        <div class="alt"><div class="k">Cách 2 · Biến tần</div><div class="txt" id="alt-vfd">–</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <p class="eyebrow">Cân bằng nhiệt & chất đốt (mùa lạnh)</p>
+      <div id="heatbody"></div>
+    </div>
+    <div class="card">
+      <p class="eyebrow">Nhận định</p>
+      <div id="warns"></div>
+    </div>
+  </section>
+
+  <!-- ============ TAB: PHÂN PHỐI ============ -->
+  <section id="tab-dist" class="panel">
+    <div class="card">
+      <p class="eyebrow">Phân phối gió đều & áp suất âm (min-vent)</p>
+      <div id="airdistbody"></div>
+    </div>
+    <div class="card">
+      <p class="eyebrow">Thiết kế & vận hành tunnel</p>
+      <div id="tunnelbody"></div>
+    </div>
+    <div class="card">
+      <p class="eyebrow">Tốc độ gió & nhiệt độ cảm nhận</p>
+      <div id="chart"></div>
+      <div class="chartcaption">Xanh lá: cảm nhận · xanh dương: mục tiêu · vàng: tối thiểu · trắng: điểm vận hành</div>
+      <table id="tbl"><thead><tr><th>Quạt</th><th>m³/h</th><th>m/s</th><th>mát°</th><th>cảm°</th></tr></thead><tbody></tbody></table>
+    </div>
+  </section>
+
+  <!-- ============ TAB: THIẾT KẾ ============ -->
+  <section id="tab-design" class="panel">
+    <div class="card">
+      <p class="eyebrow">Đối chiếu ROSS · Aviagen</p>
+      <div class="rossgrid">
+        <div class="rossitem"><div class="t">Nhiệt mục tiêu ROSS — tham khảo (theo TL &amp; ẩm · Table 2.5)</div><div class="v" id="ross-temp">–</div></div>
+        <div class="rossitem"><div class="t">Thông thoáng tối thiểu ROSS (Table 6.2)</div><div class="v" id="ross-mv">–</div></div>
+      </div>
+      <div class="limits" id="ross-limits"></div>
+    </div>
+    <div class="card">
+      <p class="eyebrow">Thiết kế Combi-tunnel</p>
+      <div id="combibody"></div>
+    </div>
+  </section>
+</main>
+
+<nav class="tabbar">
+  <button class="on" data-t="tab-input"><span class="i">📝</span>Nhập</button>
+  <button data-t="tab-run"><span class="i">⚙️</span>Vận hành</button>
+  <button data-t="tab-dist"><span class="i">💨</span>Phân phối</button>
+  <button data-t="tab-design"><span class="i">📐</span>Thiết kế</button>
+</nav>
+<script>
+
+/* ---------- Bảng chuẩn theo ngày tuổi: [age, tempTarget°C, hum%, weight g, feed g/ngày] ---------- */
+const AGE = {
+ 1:[35,60,61,12],2:[34,61,79,17],3:[33,62,99,21],4:[32,63,122,24],5:[31,64,148,28],
+ 6:[30.5,64,176,32],7:[30,65,208,36],8:[29.5,65,242,40],9:[29,66,280,45],10:[29,66,321,49],
+ 11:[28.5,67,366,54],12:[28,68,414,58],13:[27.5,69,465,63],14:[27,70,519,69],15:[27,71,576,74],
+ 16:[26.5,72,637,79],17:[26.5,73,701,85],18:[26,74,786,90],19:[26,75,837,96],20:[25.5,75,910,102],
+ 21:[25.5,75,985,108],22:[25,75,1062,114],23:[25,75,1142,120],24:[25,75,1225,125],25:[25,75,1309,131],
+ 26:[25,75,1395,137],27:[25,75,1483,143],28:[25,75,1573,149],29:[25,75,1664,154],30:[25,75,1757,160],
+ 31:[25,75,1851,165],32:[25,75,1946,170],33:[25,75,2041,175],34:[25,75,2138,180],35:[25,75,2235,185],
+ 36:[25,75,2300,189],37:[25,75,2430,194],38:[25,75,2527,198],39:[25,75,2625,202],40:[25,75,2723,206],
+ 41:[25,75,2821,209],42:[25,75,2918,213]
+};
+/* Hệ số làm mát (chill) theo ngày tuổi — khớp cột C sheet Chill-effect */
+const CHILL = {1:8,2:7.55,3:7.1,4:6.65,5:6.2,6:5.75,7:5.3,8:5.2286,9:5.1571,10:5.0857,11:5.0143,12:4.9429,13:4.8714,14:4.8,15:4.6714,16:4.5429,17:4.4143,18:4.2857,19:4.1571,20:4.0286,21:3.9,22:3.8429,23:3.7857,24:3.7286,25:3.6714,26:3.6143,27:3.5571,28:3.5,29:3.4286,30:3.3571,31:3.2857,32:3.2143,33:3.1429,34:3.0714,35:3,36:3,37:3,38:3,39:3,40:3,41:3,42:3};
+/* Ngưỡng nhiệt tối thiểu (vùng thoải mái) theo ngày tuổi — cột D */
+const MINT = {1:35,2:34.2,3:33.4,4:32.6,5:31.8,6:30.9,7:30,8:29.7,9:29.4,10:29.2,11:28.9,12:28.6,13:28.3,14:28,15:27.8,16:27.5,17:27.2,18:26.9,19:26.6,20:26.3,21:26,22:25.6,23:25.2,24:24.8,25:24.4,26:24,27:23.5,28:23,29:22.6,30:22.2,31:22,32:22,33:22,34:22,35:22,36:22,37:22,38:22,39:22,40:22,41:22,42:22};
+
+/* ===== Khuyến cáo ROSS (Aviagen Broiler Handbook 2025) ===== */
+// Table 6.2 — thông thoáng tối thiểu m³/giờ/con theo trọng lượng (kg), nhiệt ngoài -1..16°C
+const ROSS_MV = [[0.05,0.09],[0.10,0.15],[0.20,0.26],[0.30,0.35],[0.40,0.43],[0.50,0.51],[0.60,0.59],[0.70,0.66],[0.80,0.73],[0.90,0.80],[1.00,0.86],[1.20,0.99],[1.40,1.11],[1.60,1.23],[1.80,1.34],[2.00,1.45],[2.20,1.56],[2.40,1.67],[2.60,1.77],[2.80,1.87],[3.00,1.97],[3.20,2.07],[3.40,2.16],[3.60,2.26],[3.80,2.35],[4.00,2.44],[4.20,2.53],[4.40,2.62],[4.60,2.71],[4.80,2.80],[5.00,2.89]];
+// Table 2.5 — nhiệt bầu khô mục tiêu °C theo trọng lượng (g) tại RH 40/50/60/70%
+const ROSS_T25 = [[44,36.0,33.2,30.8,29.2],[100,33.7,31.2,28.9,27.3],[180,32.5,29.9,27.7,26.0],[290,31.3,28.6,26.7,25.0],[425,30.2,27.8,25.7,24.0],[590,29.0,26.8,24.8,23.0],[790,27.7,25.5,23.6,21.9],[1015,26.9,24.7,22.7,21.3],[1260,25.7,23.5,21.7,20.2],[1530,24.8,22.7,20.7,19.3]];
+const RH_COLS=[40,50,60,70];
+
+function interp1(tbl,x){ // nội suy tuyến tính bảng [[x,y],...]
+  if(x<=tbl[0][0]) return tbl[0][1];
+  if(x>=tbl[tbl.length-1][0]) return tbl[tbl.length-1][1];
+  for(let i=1;i<tbl.length;i++){ if(x<=tbl[i][0]){
+    const [x0,y0]=tbl[i-1],[x1,y1]=tbl[i]; return y0+(y1-y0)*(x-x0)/(x1-x0);
+  }}
+  return tbl[tbl.length-1][1];
+}
+function rossTarget(wtG, rh){ // nội suy 2 chiều theo trọng lượng & RH
+  const r=Math.max(40,Math.min(70,rh));
+  let ci=0; for(let i=0;i<RH_COLS.length-1;i++){ if(r>=RH_COLS[i]) ci=i; }
+  const r0=RH_COLS[ci],r1=RH_COLS[ci+1];
+  const colLo=ROSS_T25.map(row=>[row[0],row[ci+1]]);
+  const colHi=ROSS_T25.map(row=>[row[0],row[ci+2]]);
+  const tLo=interp1(colLo,wtG), tHi=interp1(colHi,wtG);
+  return tLo+(tHi-tLo)*(r-r0)/(r1-r0);
+}
+
+const $ = id => document.getElementById(id);
+let lastAge = null;
+
+function absHumidity(t,rh){ // g/m3 — công thức trong file
+  return (13.24*rh)/(t+273.15) * Math.exp((17.42*t)/(t+239.7));
+}
+function fmt(n,d=0){ if(!isFinite(n)) return '–';
+  return n.toLocaleString('vi-VN',{minimumFractionDigits:d,maximumFractionDigits:d}); }
+function mmss(sec){ const m=Math.floor(sec/60), s=Math.round(sec%60);
+  return m>0 ? `${m}′${String(s).padStart(2,'0')}″` : `${s}s`; }
+
+function loadAgeDefaults(age, force){
+  const a = AGE[age]; if(!a) return;
+  $('ageAuto').textContent = `Chuẩn: ${a[0]}°C · ${a[1]}% · ${fmt(a[2])} g · ăn ${a[3]} g/ngày`;
+  if(force){
+    $('in-tin').value=a[0]; $('in-hin').value=a[1]; $('in-wt').value=a[2]; $('in-fd').value=a[3];
+  }
+}
+
+function compute(){
+  const age = +$('in-age').value;
+  $('ageBadge').textContent = age;
+  loadAgeDefaults(age,true); lastAge=age;   // mục tiêu luôn cố định theo ngày tuổi
+
+  const W=+$('in-w').value, L=+$('in-l').value, H=+$('in-h').value, N=+$('in-n').value;
+  const tin=+$('in-tin').value, hin=+$('in-hin').value, wt=+$('in-wt').value, feed=+$('in-fd').value;
+  const tmeas=+$('in-tinm').value, rhmeas=+$('in-hinm').value;   // số đo thực trong trại
+  const tout=+$('in-tout').value, hout=+$('in-hout').value;
+  const ratio=+$('in-ratio').value, hzmin=+$('in-hzmin').value;
+  const nFans=Math.max(1,+$('in-fans').value), fanCap=+$('in-fancap').value;
+  const Qmax = nFans*fanCap;
+  $('fanTotal').textContent = `Tổng công suất: ${fmt(Qmax)} m³/giờ`;
+
+  /* ----- nhu cầu thông thoáng (m3/kg/giờ) ----- */
+  const water = feed*ratio;
+  const Hh = (water - feed*0.3 + 1 + 0.12*feed)/24;      // ml/giờ/con
+  const Iin = absHumidity(tin,hin);                       // ẩm tuyệt đối MỤC TIÊU (để GIỮ ẩm ở setpoint) — khớp Excel gốc
+  const absMeas = absHumidity(tmeas,rhmeas);              // ẩm tuyệt đối thực đo (trạng thái hiện tại, để cảnh báo)
+  const Jout = absHumidity(tout,hout);
+  const K = Iin - Jout;                                    // g/m3 — thải ẩm chỉ khi K>0 (dùng ẩm TUYỆT ĐỐI, không dùng RH ngoài)
+  const ventH2O = (K>0) ? (Hh/K/wt*1000) : Infinity;       // m3/kg/giờ
+  const ventCO2 = (3*2800*feed/1e6/wt*1000) * (100-(15-tout))/100;
+  const perKg = Math.max(isFinite(ventH2O)?ventH2O:0, ventCO2);
+
+  const totalKg = N*wt/1000;
+  const Qmc = perKg*totalKg;                              // nhu cầu do thải ẩm/CO2
+  const QreqH2O = (isFinite(ventH2O)?ventH2O:0)*totalKg;
+  const QreqCO2 = ventCO2*totalKg;
+
+  /* ----- ROSS: sàn thông thoáng tối thiểu (Table 6.2) ----- */
+  const rossRate = interp1(ROSS_MV, wt/1000);            // m³/giờ/con
+  const Qross = rossRate*N;                              // tổng m³/giờ
+  const rossT = rossTarget(wt, rhmeas);                  // nhiệt mục tiêu ROSS theo TL & RH
+
+  /* ----- nhu cầu LÀM MÁT chống nóng (dựa trên số đo thực trong trại) ----- */
+  const chill = CHILL[age]||3;
+  const areaCross = W*H;                                   // mặt cắt ngang
+  const apparentIn = tmeas - ((95 - rhmeas - tmeas)*0.12); // nhiệt độ cảm nhận trong trại lúc này
+  const reqWind = Math.max(0, (apparentIn - tin)/chill);   // m/s cần để kéo cảm nhận về mục tiêu
+  const Qcool = reqWind*areaCross*3600;                    // m3/giờ để đạt tốc độ gió đó
+  const canExchangeCool = tout < tmeas;                    // đưa gió ngoài vào có hạ được nhiệt không
+
+  /* ----- nhu cầu cuối = lớn nhất (min-vent floor gồm cả ROSS) ----- */
+  const Qmin = Math.max(QreqH2O, QreqCO2, Qross);          // sàn thông thoáng tối thiểu
+  const Qreq = Math.max(Qmin, Qcool);
+  let driver;                                              // yếu tố chi phối
+  if(Qcool>=Qmin && Qcool>0) driver='cool';
+  else if(Qross>=QreqH2O && Qross>=QreqCO2) driver='ross';
+  else if(isFinite(ventH2O) && QreqH2O>=QreqCO2) driver='h2o';
+  else driver='co2';
+
+  /* ----- KPI ----- */
+  $('k-clim').innerHTML = `${fmt(tmeas,0)}<small>°</small> → ${fmt(tin,0)}<small>° mục tiêu</small>`;
+  $('k-lw').innerHTML = `${fmt(totalKg)}<small> kg</small>`;
+  const floor = W*L;
+  $('k-dens').innerHTML = `${fmt(N/floor,1)}<small> con/m²</small>`;
+
+  /* ----- card đối chiếu ROSS ----- */
+  $('ross-temp').innerHTML = `${fmt(rossT,1)}<small>°C</small>`;
+  $('ross-mv').innerHTML = `${fmt(rossRate,2)}<small> m³/giờ/con</small> → ${fmt(Qross)}<small> m³/giờ</small>`;
+  $('ross-limits').innerHTML = `<b>Giới hạn khí:</b> CO₂ &lt; 3000 ppm · CO &lt; 10 ppm · NH₃ &lt; 10 ppm &nbsp;|&nbsp; <b>RH mục tiêu:</b> 60–70% (3 ngày đầu) rồi 50–65% &nbsp;|&nbsp; <b>Gió úm:</b> &lt; 0,15 m/s để tránh wind-chill trên gà nhỏ.`;
+  window.__rossT = rossT;
+
+  /* ----- demand boxes ----- */
+  $('d-h2o').textContent = isFinite(QreqH2O)? fmt(QreqH2O)+' m³/giờ' : 'Không đủ điều kiện';
+  $('d-h2o-kg').textContent = isFinite(ventH2O)? (fmt(ventH2O,2)+' m³/kg/giờ · ẩm tuyệt đối '+fmt(Iin,1)+'→'+fmt(Jout,1)+' g/m³') : ('không thải được — ẩm ngoài '+fmt(Jout,1)+' ≥ trong '+fmt(Iin,1)+' g/m³');
+  $('d-co2').textContent = fmt(QreqCO2)+' m³/giờ';
+  $('d-co2-kg').textContent = fmt(ventCO2,2)+' m³/kg/giờ';
+  $('d-cool').textContent = Qcool>0 ? fmt(Qcool)+' m³/giờ' : 'Chưa cần';
+  $('d-cool-v').textContent = Qcool>0 ? ('cần gió '+fmt(reqWind,2)+' m/s · cảm nhận '+fmt(apparentIn,1)+'°C') : ('cảm nhận '+fmt(apparentIn,1)+'°C ≤ mục tiêu');
+  $('d-ross').textContent = fmt(Qross)+' m³/giờ';
+  $('d-ross-kg').textContent = fmt(rossRate,2)+' m³/giờ/con';
+  ['box-h2o','box-co2','box-cool','box-ross'].forEach(b=>{ $(b).classList.remove('gov'); $(b).querySelector('.taglet')?.remove(); });
+  const govBox = driver==='cool'?'box-cool': driver==='ross'?'box-ross': driver==='h2o'?'box-h2o':'box-co2';
+  $(govBox).classList.add('gov');
+  const tg=document.createElement('span'); tg.className='taglet tag-gov'; tg.textContent='Quyết định nhu cầu';
+  $(govBox).appendChild(tg);
+
+  /* ----- load meter ----- */
+  const load = Qreq/Qmax;
+  $('loadpct').textContent = fmt(load*100,0)+'%';
+  const fill=$('loadfill'); fill.style.width=Math.min(load*100,100)+'%';
+  fill.style.background = load>1 ? 'var(--short)' : load>0.85 ? 'var(--amber)' : 'var(--accent)';
+  $('loadpct').style.color = load>1 ? 'var(--short)' : load>0.85 ? 'var(--amber)' : 'var(--accent)';
+
+  /* ----- KHUYẾN CÁO CHẠY QUẠT ----- */
+  recommend(Qreq, Qmax, nFans, fanCap, hzmin, driver==='cool');
+
+  /* ----- bảng gió & cảm nhận + chart (nền = cảm nhận trong trại thực đo) ----- */
+  const apparent = apparentIn;
+  const minT = MINT[age]||22;
+  const rows=[];
+  for(let p=10;p<=100;p+=10){
+    const q = p*Qmax/100;
+    const v = q/areaCross/3600;
+    const cool = v*chill;
+    const perc = apparent - cool;
+    rows.push({p,q,v,cool,perc});
+  }
+  const opPct = Math.min(100, Math.max(10, load*100));
+  const opQ = opPct*Qmax/100, opV=opQ/areaCross/3600, opPerc=apparent-opV*chill;
+  $('k-perc').innerHTML = `${fmt(opPerc,1)}<small>°C</small>`;
+
+  buildTable(rows, opPct);
+  drawChart(rows, minT, apparent, opPct, opPerc, tin);
+  buildWarns({load,opPerc,minT,tin,tmeas,tout,K,driver,age,dens:N/floor,reqWind,apparentIn,Qcool,Qmax,Qreq,canExchangeCool,rhmeas,absIn:Iin,absOut:Jout,absMeas,hout});
+
+  /* ----- CÂN BẰNG NHIỆT mùa lạnh ----- */
+  const U=+$('in-u').value, heatkg=+$('in-heatkg').value;
+  const cal=+$('in-cal').value, eff=Math.max(0.1,+$('in-eff').value/100), price=+$('in-price').value;
+  const dT = tin - tout;                                   // cần nâng từ ngoài lên mục tiêu
+  const Aenv = 2*(W+L)*H + W*L;                            // vách + mái
+  const ventLoss = Qmin*0.335*dT;                        // W, tại thông gió tối thiểu (gồm sàn ROSS)
+  const shellLoss = U*Aenv*dT;                            // W qua vỏ chuồng
+  const birdHeat = totalKg*heatkg;                        // W gà tự tỏa
+  const Qheat = Math.max(0, ventLoss+shellLoss-birdHeat); // W cần cấp thêm
+  const fuelRate = Qheat/1000/(cal*eff);                  // kg/giờ
+  const extra10 = (0.10*Qmax)*0.335*dT/1000;              // kW phạt mỗi 10% quạt vượt
+  buildHeat({dT,tin,tout,birdHeat,ventLoss,shellLoss,Qheat,Qmc:Qmin,U,Aenv,fuelRate,price,extra10,cal,eff,driver});
+
+  /* ----- PHÂN PHỐI GIÓ ĐỀU & ÁP SUẤT ÂM (min-vent) ----- */
+  const Ppa=+$('in-press').value, gapcm=+$('in-gap').value;
+  const p0=+$('in-p0').value, qtest=+$('in-qtest').value, pmax=+$('in-pmax').value;
+  buildAirDist({Ppa,gapcm,p0,qtest,pmax,fanCap,Qmin,W,L,H,N,floor,driver,tout,tmeas});
+
+  /* ----- THIẾT KẾ & VẬN HÀNH TUNNEL ----- */
+  const designV=+$('in-designv').value, padV=+$('in-padv').value;
+  buildTunnel({W,L,H,area:areaCross,Qmax,fanCap,nFans,designV,padV,reqWind,driver});
+
+  /* ----- THIẾT KẾ COMBI-TUNNEL (sizing thiết bị) ----- */
+  const sw=+$('in-sw').value, fanUnit=+$('in-fanunit').value, inletType=+$('in-inlettype').value;
+  const pipeDia=+$('in-pipedia').value, pipePa=+$('in-press').value;
+  buildCombi({W,L,H,area:areaCross,N,sw,designV,fanUnit,inletType,padV,pipeDia,pipePa,fanCap,nFans});
+}
+
+function buildHeat(o){
+  const b=$('heatbody');
+  if(o.driver==='cool'){
+    b.innerHTML=`<div class="warn w-ok"><span class="ic">i</span><span>Đang ở chế độ <b>làm mát/chống nóng</b> — không cần sưởi. Cân bằng nhiệt mùa lạnh chỉ áp dụng khi chuồng cần giữ ấm.</span></div>`;
+    return;
+  }
+  if(o.dT<=0){
+    b.innerHTML=`<div class="warn w-ok"><span class="ic">✓</span><span>Nhiệt độ mục tiêu ${fmt(o.tin,0)}°C ≤ ngoài trời ${fmt(o.tout,0)}°C — <b>không cần sưởi</b>. Xem phần làm mát/thông thoáng phía trên.</span></div>`;
+    return;
+  }
+  if(o.Qheat<=0){
+    b.innerHTML=`<div class="warn w-ok"><span class="ic">✓</span><span>Gà tự tỏa đủ nhiệt (${fmt(o.birdHeat/1000,1)} kW) để bù tổn thất — <b>chưa cần sưởi</b>. Chỉ cần giữ thông gió tối thiểu ${fmt(o.Qmc)} m³/giờ.</span></div>`;
+    return;
+  }
+  const rows=[
+    ['Nhiệt gà tự tỏa', -o.birdHeat, 'nguồn nhiệt sẵn có'],
+    ['Tổn thất qua thông gió tối thiểu', o.ventLoss, `${fmt(o.Qmc)} m³/giờ · ΔT ${fmt(o.dT,0)}°C`],
+    ['Tổn thất qua vỏ chuồng', o.shellLoss, `U ${o.U} · ${fmt(o.Aenv)} m² · ΔT ${fmt(o.dT,0)}°C`],
+  ];
+  let t=`<table><thead><tr><th>Thành phần cân bằng nhiệt</th><th>kW</th><th style="text-align:left">Ghi chú</th></tr></thead><tbody>`;
+  rows.forEach(r=>{ t+=`<tr><td style="text-align:left">${r[0]}</td><td>${r[1]>0?'+':''}${fmt(r[1]/1000,1)}</td><td style="text-align:left;color:var(--dim)">${r[2]}</td></tr>`; });
+  t+=`<tr class="hl"><td style="text-align:left"><b>Nhiệt cần cấp thêm</b></td><td>${fmt(o.Qheat/1000,1)}</td><td style="text-align:left">để giữ ${fmt(o.tin,0)}°C</td></tr></tbody></table>`;
+
+  let fuel=`<div class="hzrow" style="margin-top:14px">`;
+  fuel+=`<div class="hzcell"><div class="l">Nhiệt cần cấp</div><div class="n">${fmt(o.Qheat/1000,1)} <small>kW</small></div></div>`;
+  fuel+=`<div class="hzcell"><div class="l">Chất đốt</div><div class="n">${fmt(o.fuelRate,2)} <small>kg/giờ</small></div></div>`;
+  fuel+=`<div class="hzcell"><div class="l">Mỗi ngày</div><div class="n">${fmt(o.fuelRate*24,0)} <small>kg/ngày</small></div></div>`;
+  if(o.price>0) fuel+=`<div class="hzcell"><div class="l">Chi phí</div><div class="n">${fmt(o.fuelRate*o.price*24,0)} <small>đ/ngày</small></div></div>`;
+  fuel+=`</div>`;
+
+  const penalty=`<div class="warn w-amber" style="margin-top:14px"><span class="ic">~</span><span>Giữ thông gió ở mức <b>tối thiểu ${fmt(o.Qmc)} m³/giờ</b>. Mỗi 10% công suất quạt chạy vượt kéo thêm ~<b>${fmt(o.extra10,1)} kW</b> nhiệt ra ngoài (≈ ${fmt(o.extra10/(o.cal*o.eff),2)} kg chất đốt/giờ) — lãng phí chất đốt.</span></div>`;
+  b.innerHTML = t+fuel+penalty;
+}
+
+function recommend(Qreq,Qmax,nFans,fanCap,hzmin,cooling){
+  const reco=$('reco'), hzrow=$('reco-hz');
+  reco.className='reco'; hzrow.innerHTML='';
+  const CYCLE=300;                      // chu kỳ timer 5 phút
+  const MINVENT_MAX=2;                   // chỉ ON/OFF khi ≤ 2 quạt full; từ 3 quạt trở lên dùng biến tần liên tục
+  const floorFrac = hzmin/50;           // phần lẻ tối thiểu để biến tần chạy ổn định
+
+  // Mô hình quạt bậc thang: chạy N quạt full + 1 quạt "trim" điều tiết phần lẻ
+  const fansFull = Math.max(0, Math.floor(Qreq/fanCap));   // số quạt chạy 100%
+  const remainder = Math.max(0, Qreq - fansFull*fanCap);   // phần lẻ (m³/giờ)
+  const trimFrac = remainder/fanCap;                       // 0..1 của một quạt
+  const trimHz = Math.max(hzmin, Math.round(50*trimFrac));
+  const on = CYCLE*trimFrac, off = CYCLE-on;               // luôn 0..CYCLE nên off≥0
+
+  /* ---- Cách 1: ON/OFF theo timer (chỉ hợp lý ở thông thoáng tối thiểu) ---- */
+  let onoff;
+  if(cooling) onoff='Đang làm mát/chống nóng — <b>KHÔNG dùng ngắt quãng</b>; quạt phải chạy liên tục (xem Cách 2).';
+  else if(Qreq<=0) onoff='Gần như không cần chạy — mở thoáng tự nhiên là đủ.';
+  else if(fansFull>=nFans) onoff=`Chạy hết <b>${nFans} quạt</b> liên tục (đã kịch công suất).`;
+  else if(fansFull===0) onoff=`Chạy <b>1 quạt</b> chu kỳ ${CYCLE/60}′: bật <b>${mmss(on)}</b> · tắt <b>${mmss(off)}</b>.`;
+  else if(fansFull>MINVENT_MAX) onoff=`Đang chạy ${fansFull} quạt — <b>không còn là thông thoáng tối thiểu</b>, không dùng ON/OFF. Quạt trim chạy liên tục (xem Cách 2).`;
+  else onoff=`Chạy <b>${fansFull} quạt</b> liên tục + <b>1 quạt</b> chu kỳ ${CYCLE/60}′: bật <b>${mmss(on)}</b> · tắt <b>${mmss(off)}</b>.`;
+  $('alt-onoff').innerHTML=onoff;
+
+  /* ---- Cách 2: Biến tần (VFD) ---- */
+  let vfd;
+  if(Qreq<=0) vfd='Không cần.';
+  else if(fansFull>=nFans) vfd=`Tất cả <b>${nFans} quạt</b> ở <b>50 Hz</b> (full).`;
+  else{
+    const subFloor = trimFrac>0 && trimFrac<floorFrac;
+    const trimTxt = trimFrac<=0 ? `không cần quạt lẻ`
+      : (subFloor && fansFull<=MINVENT_MAX
+          ? `phần lẻ ~${fmt(trimFrac*50,0)}Hz dưới sàn — có thể để 1 quạt ON/OFF thay thế`
+          : `1 quạt biến tần <b>${trimHz} Hz</b>${subFloor?' (giữ ở sàn)':''}`);
+    vfd = (fansFull===0)
+      ? (trimFrac>0 ? `${trimTxt.charAt(0).toUpperCase()+trimTxt.slice(1)}.` : 'Không cần.')
+      : `Chạy <b>${fansFull} quạt</b> ở 50Hz + ${trimTxt}.`;
+  }
+  $('alt-vfd').innerHTML=vfd;
+
+  /* ---- Khuyến cáo tổng hợp ---- */
+  if(Qreq<=0){
+    reco.classList.add('mode-amber');
+    $('reco-mode').textContent='Nhu cầu tối thiểu';
+    $('reco-head').textContent='Chưa cần chạy quạt';
+    $('reco-detail').innerHTML='Điều kiện hiện tại gần như không phát sinh nhu cầu thải ẩm/CO₂ — chỉ cần thông thoáng tự nhiên và theo dõi.';
+    hzCell('Quạt','0','cái');
+  }
+  else if(fansFull>=nFans){
+    reco.classList.add('mode-red');
+    $('reco-mode').textContent='Vượt công suất';
+    $('reco-head').textContent='Chạy hết tất cả quạt — vẫn thiếu gió';
+    $('reco-detail').innerHTML=`Nhu cầu <b>${fmt(Qreq)}</b> m³/giờ vượt công suất lắp đặt <b>${fmt(Qmax)}</b> m³/giờ, thiếu <b>${fmt(Qreq-Qmax)}</b> m³/giờ. Cần thêm quạt hoặc kết hợp tấm làm mát/phun sương.`;
+    hzCell('Quạt chạy', nFans, 'cái'); hzCell('Tần số','50','Hz');
+  }
+  else if(!cooling && fansFull<=MINVENT_MAX && trimFrac>0 && trimFrac<floorFrac){
+    // Thông thoáng tối thiểu: phần lẻ nhỏ + ít quạt full -> quạt trim ON/OFF
+    reco.classList.add('mode-amber');
+    $('reco-mode').textContent='Thông thoáng tối thiểu';
+    if(fansFull===0){
+      $('reco-head').textContent='Chạy 1 quạt ON/OFF theo timer';
+      $('reco-detail').innerHTML=`Nhu cầu thấp (phần lẻ ~${fmt(trimFrac*50,0)}Hz, dưới sàn ${hzmin}Hz). Chạy <b>1 quạt</b> theo chu kỳ ${CYCLE/60} phút để giữ khí tươi mà không thổi lạnh gà.`;
+      hzCell('Bật', mmss(on), ''); hzCell('Tắt', mmss(off), '');
+    } else {
+      $('reco-head').textContent=`Chạy ${fansFull} quạt full + 1 quạt ON/OFF`;
+      $('reco-detail').innerHTML=`Chạy <b>${fansFull} quạt</b> liên tục; phần lẻ nhỏ nên để <b>1 quạt ON/OFF</b> chu kỳ ${CYCLE/60}′: bật <b>${mmss(on)}</b> · tắt <b>${mmss(off)}</b>.`;
+      hzCell('Quạt full', fansFull, 'cái @50Hz'); hzCell('Trim bật', mmss(on), ''); hzCell('Tắt', mmss(off), '');
+    }
+  }
+  else{
+    // Điều tiết liên tục bằng biến tần cho quạt trim (fansFull>3 buộc VFD kể cả dưới sàn)
+    const belowFloor = trimFrac>0 && trimFrac<floorFrac;   // phải kéo lên sàn Hz
+    $('reco-mode').textContent = cooling ? 'Làm mát — chạy liên tục' : 'Điều tiết theo bậc';
+    if(fansFull>0){
+      $('reco-head').textContent=`Chạy ${fansFull} quạt full + 1 quạt biến tần`;
+      hzCell('Quạt full', fansFull, 'cái @50Hz');
+    } else {
+      $('reco-head').textContent='Chạy 1 quạt biến tần';
+    }
+    if(trimFrac>0){
+      const note = belowFloor ? ` (phần lẻ chỉ ~${fmt(trimFrac*50,0)}Hz, giữ ở sàn ${hzmin}Hz để quạt chạy ổn định, dư gió nhẹ)` : '';
+      $('reco-detail').innerHTML = (fansFull>0
+        ? `Chạy <b>${fansFull} quạt</b> ở 50Hz, thêm <b>1 quạt biến tần ở ${trimHz} Hz</b> cấp ~<b>${fmt(Qreq)}</b> m³/giờ${note}. Chỉnh Hz quạt trim theo nhiệt độ thực đo.`
+        : `Đặt <b>1 quạt biến tần ở ${trimHz} Hz</b> (≈ ${fmt(trimFrac*100,0)}% tốc độ) cấp <b>${fmt(Qreq)}</b> m³/giờ. Tăng/giảm Hz theo nhiệt độ thực đo.`);
+      hzCell('Quạt biến tần', trimHz, 'Hz');
+    } else {
+      $('reco-detail').innerHTML=`Chạy đúng <b>${fansFull} quạt</b> ở 50Hz là vừa đủ <b>${fmt(Qreq)}</b> m³/giờ, không cần quạt lẻ.`;
+    }
+  }
+}
+function hzCell(label,num,unit){
+  const d=document.createElement('div'); d.className='hzcell';
+  d.innerHTML=`<div class="l">${label}</div><div class="n">${num}${unit?` <small>${unit}</small>`:''}</div>`;
+  $('reco-hz').appendChild(d);
+}
+
+function buildTable(rows, opPct){
+  const tb=$('tbl').querySelector('tbody'); tb.innerHTML='';
+  rows.forEach(r=>{
+    const tr=document.createElement('tr');
+    if(Math.abs(r.p-Math.round(opPct/10)*10)<0.01 && Math.round(opPct/10)*10===r.p) tr.className='hl';
+    tr.innerHTML=`<td>${r.p}%</td><td>${fmt(r.q)}</td><td>${fmt(r.v,2)}</td><td>${fmt(r.cool,2)}</td><td>${fmt(r.perc,1)}</td>`;
+    tb.appendChild(tr);
+  });
+}
+
+function drawChart(rows,minT,apparent,opPct,opPerc,target){
+  const W=680,H=260,pad={l:44,r:16,t:16,b:34};
+  const xs=p=>pad.l+(p-10)/90*(W-pad.l-pad.r);
+  const temps=rows.map(r=>r.perc).concat([minT,apparent,target]);
+  let ymin=Math.min(...temps)-1, ymax=Math.max(...temps)+1;
+  const ys=t=>pad.t+(ymax-t)/(ymax-ymin)*(H-pad.t-pad.b);
+  let g=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Biểu đồ nhiệt độ cảm nhận theo mức quạt">`;
+  // grid Y
+  for(let i=0;i<=4;i++){ const t=ymin+(ymax-ymin)*i/4; const y=ys(t);
+    g+=`<line x1="${pad.l}" y1="${y}" x2="${W-pad.r}" y2="${y}" stroke="#274038" stroke-width="1"/>`;
+    g+=`<text x="${pad.l-8}" y="${y+4}" text-anchor="end" fill="#5f7d74" font-size="10" font-family="monospace">${t.toFixed(0)}°</text>`;
+  }
+  // x labels
+  rows.forEach(r=>{ if(r.p%20===0){ g+=`<text x="${xs(r.p)}" y="${H-12}" text-anchor="middle" fill="#5f7d74" font-size="10" font-family="monospace">${r.p}%</text>`; }});
+  // target temp line (mục tiêu)
+  if(target>=ymin&&target<=ymax){
+    g+=`<line x1="${pad.l}" y1="${ys(target)}" x2="${W-pad.r}" y2="${ys(target)}" stroke="#7fd6ff" stroke-width="1.2" stroke-dasharray="2 4"/>`;
+    g+=`<text x="${pad.l+4}" y="${ys(target)-5}" fill="#7fd6ff" font-size="10" font-family="monospace">mục tiêu ${target}°</text>`;
+  }
+  // min temp line
+  g+=`<line x1="${pad.l}" y1="${ys(minT)}" x2="${W-pad.r}" y2="${ys(minT)}" stroke="#f4c04e" stroke-width="1.4" stroke-dasharray="6 5"/>`;
+  g+=`<text x="${W-pad.r}" y="${ys(minT)-5}" text-anchor="end" fill="#f4c04e" font-size="10" font-family="monospace">tối thiểu ${minT}°</text>`;
+  // perceived curve
+  let d='';
+  rows.forEach((r,i)=>{ d+=(i?'L':'M')+xs(r.p)+' '+ys(r.perc)+' '; });
+  g+=`<path d="${d}" fill="none" stroke="#3ddc97" stroke-width="2.4"/>`;
+  rows.forEach(r=>{ g+=`<circle cx="${xs(r.p)}" cy="${ys(r.perc)}" r="2.6" fill="#3ddc97"/>`; });
+  // operating point
+  const ox=xs(opPct), oy=ys(opPerc);
+  g+=`<circle cx="${ox}" cy="${oy}" r="7" fill="none" stroke="#eaf3ef" stroke-width="2"/>`;
+  g+=`<circle cx="${ox}" cy="${oy}" r="3.5" fill="#eaf3ef"/>`;
+  g+=`<text x="${ox}" y="${oy-12}" text-anchor="middle" fill="#eaf3ef" font-size="10.5" font-family="monospace">${opPerc.toFixed(1)}°</text>`;
+  g+=`</svg>`;
+  $('chart').innerHTML=g;
+}
+
+function buildWarns(o){
+  const box=$('warns'); box.innerHTML='';
+  const add=(cls,ic,txt)=>{ const d=document.createElement('div'); d.className='warn '+cls;
+    d.innerHTML=`<span class="ic">${ic}</span><span>${txt}</span>`; box.appendChild(d); };
+
+  // Stress nhiệt: nhu cầu làm mát chi phối
+  if(o.driver==='cool'){
+    if(o.Qcool>o.Qmax){
+      add('w-red','!',`<b>Nguy cơ stress nhiệt.</b> Trong trại đang cảm nhận ~${fmt(o.apparentIn,1)}°C, cần tốc độ gió <b>${fmt(o.reqWind,2)} m/s</b> nhưng quạt không đủ. Chạy hết quạt (tunnel) <b>và</b> bật tấm làm mát/phun sương.`);
+    } else {
+      add('w-amber','~',`Đang cần <b>làm mát</b>: chạy tunnel đạt tốc độ gió ~<b>${fmt(o.reqWind,2)} m/s</b> để kéo cảm nhận ${fmt(o.apparentIn,1)}°C về quanh mục tiêu ${o.tin}°C.`);
+    }
+    if(!o.canExchangeCool){
+      add('w-red','!',`Ngoài trời ${fmt(o.tout,1)}°C ≥ trong trại ${fmt(o.tmeas,1)}°C — <b>đưa gió ngoài vào không hạ được nhiệt độ</b>, chỉ còn hiệu ứng gió (wind-chill). Bắt buộc dùng <b>tấm làm mát/phun sương</b> để hạ nhiệt khí vào.`);
+    } else {
+      add('w-ok','i',`Ngoài trời ${fmt(o.tout,1)}°C mát hơn trong trại ${fmt(o.tmeas,1)}°C — tăng gió vừa làm mát bằng trao đổi khí, vừa tạo wind-chill.`);
+    }
+  }
+
+  if(!isFinite(o.K)||o.K<=0){
+    if(o.tout < o.tin){
+      add('w-amber','~','Ẩm tuyệt đối ngoài ('+fmt(o.absOut,1)+' g/m³) ≥ trong chuồng ('+fmt(o.absIn,1)+' g/m³) → <b>thông gió KHÔNG thải được ẩm</b>. Nguyên tắc: <b>tăng nhiệt (sưởi) trước</b> rồi mới thông gió tối thiểu-cộng — khí ấm chứa nhiều ẩm hơn nên mỗi lần thay khí lấy đi nhiều nước hơn (chấp nhận tốn nhiên liệu). Tăng quạt suông chỉ làm lạnh gà.');
+    } else {
+      add('w-amber','~','Ẩm tuyệt đối ngoài ('+fmt(o.absOut,1)+' g/m³) ≥ trong ('+fmt(o.absIn,1)+' g/m³) → thông gió không thải được ẩm. Cần <b>hạ ẩm</b>; ưu tiên tốc độ gió tạo cảm giác mát thay vì phun sương.');
+    }
+  } else if(o.hout>=80 && o.driver!=='cool'){
+    add('w-ok','i','Ẩm ngoài trời cao ('+fmt(o.hout,0)+'%) nhưng khí lạnh khi vào chuồng được hâm nóng, RH tụt nên <b>vẫn hút ẩm tốt</b> (ẩm tuyệt đối trong '+fmt(o.absIn,1)+' > ngoài '+fmt(o.absOut,1)+' g/m³). Đừng nhìn RH ngoài để phán đoán — cứ thông gió tối thiểu bình thường.');
+  }
+  if(o.rhmeas>70 && isFinite(o.K) && o.K>0){
+    add('w-amber','~','Ẩm trong trại đo được '+fmt(o.rhmeas,0)+'% (cao) — nguy cơ nền ướt & NH₃. Còn thải được ẩm nên tăng nhẹ thông gió trên mức tối thiểu; nếu trời lạnh thì kết hợp sưởi để khỏi làm lạnh gà.');
+  }
+
+  if(o.load>1){
+    add('w-red','!',`Công suất quạt <b>thiếu ${fmt((o.load-1)*100,0)}%</b> so với nhu cầu. Bổ sung quạt hoặc dùng tunnel + tấm làm mát.`);
+  } else if(o.load>0.85){
+    add('w-amber','~','Quạt đang chạy gần hết công suất (>85%). Còn ít dư địa khi trời nóng lên — cân nhắc dự phòng.');
+  } else {
+    add('w-ok','✓',`Công suất quạt đủ đáp ứng nhu cầu (đang dùng ${fmt(o.load*100,0)}%).`);
+  }
+
+  if(o.opPerc < o.minT-0.5){
+    add('w-amber','~',`Ở mức quạt khuyến cáo, nhiệt độ gà cảm nhận <b>${fmt(o.opPerc,1)}°C</b> thấp hơn ngưỡng tối thiểu <b>${o.minT}°C</b> — nguy cơ lạnh, đặc biệt với gà nhỏ. Giảm tốc độ gió hoặc chạy ngắt quãng.`);
+  } else if(o.opPerc > o.tin+2){
+    add('w-amber','~',`Nhiệt độ cảm nhận <b>${fmt(o.opPerc,1)}°C</b> vẫn cao hơn mục tiêu ${o.tin}°C — tăng thông thoáng/tốc độ gió hoặc kích hoạt làm mát.`);
+  } else {
+    add('w-ok','✓',`Nhiệt độ cảm nhận <b>${fmt(o.opPerc,1)}°C</b> nằm quanh vùng mục tiêu.`);
+  }
+
+  if(o.age<=7 && o.load<0.1 && o.driver!=='cool'){
+    add('w-ok','i','Gà úm giai đoạn đầu: ưu tiên <b>thông thoáng tối thiểu ON/OFF</b>, giữ ấm và tránh gió lùa trực tiếp lên gà.');
+  }
+  if(o.dens>18){
+    add('w-amber','~',`Mật độ ${fmt(o.dens,1)} con/m² khá cao — kiểm tra tiêu chuẩn phúc lợi & tăng thông thoáng tương ứng.`);
+  }
+}
+
+/* ---- init ---- */
+function buildAirDist(o){
+  const b=$('airdistbody');
+  const rho=1.2, CdI=0.82, CdL=0.65;
+  const Qon=o.fanCap, halfW=o.W/2, throwFactor=Math.min(1,o.H/2.5);
+  const warn=(c,i,t)=>`<div class="warn ${c}" style="margin-top:10px"><span class="ic">${i}</span><span>${t}</span></div>`;
+  const cell=(l,n,u)=>`<div class="hzcell"><div class="l">${l}</div><div class="n">${n}${u?` <small>${u}</small>`:''}</div></div>`;
+
+  // Độ kín → áp tối đa giữ được (1 quạt, inlet đóng)
+  const Aleak=o.qtest/(CdL*Math.sqrt(2*o.p0/rho)*3600);
+  const Preach=0.5*rho*Math.pow(Qon/(Aleak*CdL*3600),2);
+  // NÚM 1 — ÁP SUẤT lo TẦM NÉM: áp cần để tia ném tới giữa chuồng
+  const vNeed=halfW/Math.max(0.3,throwFactor);          // m/s tia cần (bù trần thấp)
+  const Pthrow=0.5*rho*Math.pow(vNeed/CdI,2);           // Pa cần cho tầm ném
+  const Pmax=o.pmax||37;                                // ngưỡng an toàn thiết bị
+  const Pop=Math.max(1,Math.min(Pthrow,Pmax,Preach));   // áp nên vận hành
+  const v=CdI*Math.sqrt(2*Pop/rho), throwL=throwFactor*v, reachCenter=throwL>=halfW-0.3;
+  // NÚM 2 — DIỆN TÍCH INLET lo LƯU LƯỢNG (ở áp vận hành)
+  const EAtot=Qon/(Math.sqrt(2*Pop/rho)*3600), EAleak=Aleak*CdL;
+  const Ainlet=Math.max(0,(EAtot-EAleak))/CdI;
+  const gap=o.gapcm/100, Lopen=Ainlet/gap, Lavail=2*o.L, frac=Lopen/Lavail;
+  const everyN=frac>0?Math.max(1,Math.round(1/frac)):0;
+  const spacing=Math.max(2,Math.min(6,2*throwL));
+
+  let html=`<div class="hzrow">`;
+  html+=cell('Áp cần ném tới giữa',fmt(Pthrow,0),'Pa');
+  html+=cell('Ngưỡng an toàn',fmt(Pmax,0),'Pa');
+  html+=cell('Áp giữ được (độ kín)',fmt(Preach,0),'Pa');
+  html+=cell('→ Áp nên vận hành',fmt(Pop,0),'Pa');
+  html+=`</div><div class="hzrow">`;
+  html+=cell('Tốc độ tia gió',fmt(v,1),'m/s');
+  html+=cell('Tầm với',fmt(throwL,1)+' / '+fmt(halfW,1),'m');
+  html+=cell('Rò rỉ tương đương',fmt(Aleak,2),'m²');
+  html+=cell('Mở inlet',frac>1?'quá tải':(everyN>0?('mỗi cái '+everyN):'rò rỉ đủ'),'');
+  html+=`</div>`;
+
+  html+=warn('w-ok','i',`<b>Hai núm vặn tách biệt:</b> <b>áp suất (ΔP)</b> lo TẦM NÉM — đặt vừa đủ ném tới giữa, không vượt ngưỡng an toàn; <b>diện tích inlet + số quạt</b> lo LƯU LƯỢNG. Muốn ít gió thì <b>đóng bớt inlet / chạy ít quạt</b>, đừng hạ áp (hạ áp = tia yếu = rơi sớm).`);
+
+  if(Preach < Math.min(15,Pthrow)){
+    html+=warn('w-red','!',`<b>Chuồng quá hở.</b> Chỉ giữ được ~<b>${fmt(Preach,0)} Pa</b> (rò rỉ ${fmt(Aleak,2)} m²) — dưới mức cần để ném gió → khí lọt khe hở khắp nơi, rơi sớm, điểm chết. <b>Bịt kín trước</b>; chỉnh áp/inlet chưa tác dụng.`);
+  } else if(Pthrow > Pmax){
+    html+=warn('w-amber','~',`Muốn tia ném tới giữa (${fmt(halfW,1)} m) cần ~<b>${fmt(Pthrow,0)} Pa</b>, <b>vượt ngưỡng an toàn ${fmt(Pmax,0)} Pa</b>. <b>KHÔNG ép áp lên</b> (hút võng vách, hại quạt & cơ cấu inlet). Giải pháp: chạy ở ${fmt(Pmax,0)} Pa + <b>quạt tuần hoàn treo giữa chuồng</b> và/hoặc <b>tấm hướng gió (deflector)</b> để phân phối đều ở áp thấp.${o.H<2.5?' Trần thấp càng nên dựa vào quạt tuần hoàn thay vì ném xa.':''}`);
+  } else if(!reachCenter){
+    html+=warn('w-amber','~',`Độ kín chỉ cho tới ${fmt(Preach,0)} Pa nên tia chưa ném tới giữa (cần ${fmt(Pthrow,0)} Pa, vẫn dưới ngưỡng an toàn ${fmt(Pmax,0)} Pa). <b>Bịt kín thêm</b> để nâng áp, hoặc thêm quạt tuần hoàn.`);
+  } else {
+    html+=warn('w-ok','✓',`Áp nên vận hành <b>${fmt(Pop,0)} Pa</b> → tia <b>${fmt(v,1)} m/s</b>, ném ~${fmt(throwL,1)} m ≥ nửa rộng ${fmt(halfW,1)} m: <b>phân phối đều và thiết bị an toàn</b> (dưới ngưỡng ${fmt(Pmax,0)} Pa).`);
+  }
+
+  if(o.Ppa){
+    if(o.Ppa>Pmax+1) html+=warn('w-amber','~',`Bạn đang đặt <b>${fmt(o.Ppa,0)} Pa</b> — cao hơn ngưỡng an toàn ${fmt(Pmax,0)} Pa. Hạ về ${fmt(Pop,0)} Pa và bù phân phối bằng quạt tuần hoàn/deflector.`);
+    else if(o.Ppa<Pop-1) html+=warn('w-amber','~',`Bạn đang đặt <b>${fmt(o.Ppa,0)} Pa</b> — thấp hơn mức cần ${fmt(Pop,0)} Pa → tia yếu, rơi sớm. Nâng áp bằng cách <b>thu nhỏ/đóng bớt khe inlet</b>, đừng mở inlet rộng.`);
+  }
+
+  if(Preach>=15){
+    if(frac>1) html+=warn('w-amber','~',`Lưu lượng cần mở inlet dài hơn tổng hiện có — tăng áp (khe nhỏ hơn) hoặc bịt kín để giảm rò rỉ.`);
+    else if(everyN>0) html+=warn('w-ok','i',`<b>Lưu lượng:</b> mở khe ${fmt(o.gapcm,1)} cm, tổng ~${fmt(Lopen)} m, <b>mỗi inlet thứ ${everyN}</b>, cách ≤ ${fmt(spacing,1)} m/cái. Ít gió hơn → giảm số inlet mở, KHÔNG hạ áp.`);
+    else html+=warn('w-ok','i',`Rò rỉ đã đủ cấp gió ở áp này — chủ yếu <b>bịt bớt + quạt tuần hoàn</b> để phân phối đều, không mở thêm inlet.`);
+  }
+
+  if(o.H<2.5) html+=warn('w-amber','i',`<b>Trần thấp ${fmt(o.H,1)} m:</b> quãng ném men trần ngắn, khí ít được hâm ấm trước khi rơi. Ưu tiên <b>nhiều inlet nhỏ phân bố đều + quạt tuần hoàn</b> thay vì ép áp để ném xa.`);
+
+  if(o.driver==='cool') html = warn('w-ok','i','Đang ở chế độ làm mát/tunnel — phần phân phối gió này quan trọng nhất khi chạy <b>min-vent mùa lạnh</b>.') + html;
+  b.innerHTML=html;
+}
+
+function buildTunnel(o){
+  const b=$('tunnelbody');
+  const vmax = o.Qmax/o.area/3600;                    // tốc độ gió tunnel ở 100% quạt (m/s)
+  const exch = (o.W*o.L*o.H)/o.Qmax*3600;             // thời gian trao đổi khí (s)
+  const reqCap = o.designV*o.area*3600;               // lưu lượng cần để đạt tốc độ thiết kế
+  const fansNeed = reqCap/o.fanCap;                   // số quạt cần
+  const padArea = o.Qmax/o.padV/3600;                 // diện tích tấm làm mát gợi ý
+
+  let html=`<div class="hzrow">`;
+  html+=`<div class="hzcell"><div class="l">Tiết diện mặt cắt (R×C)</div><div class="n">${fmt(o.area,1)} <small>m²</small></div></div>`;
+  html+=`<div class="hzcell"><div class="l">Tốc độ gió ở 100% quạt</div><div class="n">${fmt(vmax,2)} <small>m/s</small></div></div>`;
+  html+=`<div class="hzcell"><div class="l">Trao đổi khí</div><div class="n">${fmt(exch,0)} <small>giây</small></div></div>`;
+  html+=`<div class="hzcell"><div class="l">Quạt cần cho ${fmt(o.designV,1)} m/s</div><div class="n">${fmt(fansNeed,1)} <small>/ ${o.nFans} cái</small></div></div>`;
+  html+=`</div>`;
+
+  if(vmax < o.designV*0.9){
+    html+=`<div class="warn w-amber" style="margin-top:14px"><span class="ic">~</span><span>Tốc độ tối đa <b>${fmt(vmax,2)} m/s</b> chưa đạt thiết kế ${fmt(o.designV,1)} m/s — cần ~<b>${fmt(fansNeed,1)} quạt</b> (đang có ${o.nFans}). Thêm quạt hoặc dùng tấm làm mát để bù wind-chill.</span></div>`;
+  } else if(vmax <= 3.6){
+    html+=`<div class="warn w-ok" style="margin-top:14px"><span class="ic">✓</span><span>Tốc độ tối đa <b>${fmt(vmax,2)} m/s</b> đạt vùng thiết kế (~${fmt(o.designV,1)} m/s) — wind-chill tốt.</span></div>`;
+  } else {
+    html+=`<div class="warn w-amber" style="margin-top:14px"><span class="ic">~</span><span>Tốc độ tối đa <b>${fmt(vmax,2)} m/s</b> khá cao (>3,6 m/s) — tốn điện & dễ over-chill. Dùng biến tần giảm bớt khi không cần tối đa.</span></div>`;
+  }
+
+  if(exch<=60){
+    html+=`<div class="warn w-ok"><span class="ic">✓</span><span>Trao đổi khí <b>${fmt(exch,0)} giây</b> ≤ 60 s — đạt chuẩn tunnel, thải nhiệt/ẩm nhanh.</span></div>`;
+  } else {
+    html+=`<div class="warn w-amber"><span class="ic">~</span><span>Trao đổi khí <b>${fmt(exch,0)} giây</b> > 60 s — hơi chậm cho tunnel. Thêm quạt để rút ngắn.</span></div>`;
+  }
+
+  if(o.H < 2.5){
+    html+=`<div class="warn w-amber"><span class="ic">!</span><span><b>Trần thấp ${fmt(o.H,1)} m</b> (ROSS khuyến cáo mái ≥ 2,5 m). Điểm lợi: tiết diện nhỏ nên cùng số quạt cho tốc độ gió cao hơn & trao đổi khí nhanh hơn — rất hợp tunnel. Cần lưu ý: (1) baffle/air deflector cần cao ≥ 2 m so với nền nên gần như không còn khoảng lắp — cân nhắc bỏ baffle, dựa vào tốc độ gió; (2) gió nhanh sát gà — kiểm tra đồng đều, tránh vùng xoáy sau vật cản; (3) tiết diện nhỏ làm tăng trở lực → kiểm tra áp suất làm việc & lưu lượng thực của quạt (quạt tụt lưu lượng khi áp cao).</span></div>`;
+  } else {
+    html+=`<div class="warn w-ok"><span class="ic">i</span><span>Chiều cao trần ${fmt(o.H,1)} m đạt khuyến cáo mái ≥ 2,5 m.</span></div>`;
+  }
+
+  if(o.driver==='cool'){
+    html+=`<div class="warn w-ok"><span class="ic">i</span><span>Diện tích tấm làm mát gợi ý ≈ <b>${fmt(padArea,1)} m²</b> (${fmt(o.Qmax)} m³/giờ ÷ ${fmt(o.padV,2)} m/s ÷ 3600). Vượt ~3 m/s gió thì tăng làm mát bằng tấm hiệu quả hơn là thêm gió.</span></div>`;
+  }
+
+  b.innerHTML=html;
+}
+
+function buildCombi(o){
+  const b=$('combibody');
+  const rho=1.2;
+
+  /* ===== A. CỐ ĐỊNH THEO NHÀ XƯỞNG (tiết diện × tốc độ thiết kế) — không đổi theo đàn ===== */
+  const tunnelCap = o.designV*o.area*3600;             // công suất tunnel thiết kế
+  const fansNeed = Math.ceil(tunnelCap/o.fanUnit);     // số quạt tunnel (theo tiết diện)
+  const padArea = tunnelCap/o.padV/3600;               // tấm làm mát (theo công suất tunnel)
+  const padLen = padArea/1.8;
+  const installedCap = o.nFans*o.fanCap;               // công suất tunnel đã lắp
+  const vAchieved = installedCap/o.area/3600;          // tốc độ gió thực với quạt đã lắp
+
+  /* ===== B. THEO ĐÀN GÀ (biomass) — chỉ ảnh hưởng thông gió & side inlet ===== */
+  const maxLW = o.N*o.sw;
+  const baseVent = 3*maxLW;                            // nền 3 m³/h/kg
+  const sideAir = 4*maxLW;                             // side inlet 4 m³/h/kg
+  const nInlets = Math.ceil(sideAir/o.inletType);
+  const spacingSide = (2*o.L)/Math.max(1,nInlets);
+  const minVent = o.fanCap;                            // 1 quạt lúc bật (min-vent)
+  const pipeArea = Math.pow(o.pipeDia/2,2)*3.14/1e6;   // POWER(d/2,2)*3.14/1e6 (Excel F11)
+  const vPipe = Math.sqrt(o.pipePa)*1.3;                  // SQRT(P)*1.3 (Excel F15)
+  const flowPipe = vPipe*pipeArea*3600;
+  const nPipes = Math.ceil(minVent/flowPipe);
+  const spacingPipe = (o.W*o.L)/Math.max(1,nPipes);
+
+  let g='';
+  g+=`<div style="font-size:11px;color:var(--dim);font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">A · Cố định theo nhà xưởng — tiết diện ${fmt(o.W,1)}×${fmt(o.H,1)} m, tốc độ ${fmt(o.designV,1)} m/s · KHÔNG đổi theo đàn gà</div>`;
+  g+=`<div class="hzrow">`;
+  g+=`<div class="hzcell"><div class="l">Công suất tunnel thiết kế</div><div class="n">${fmt(tunnelCap/1000,0)} <small>k m³/h</small></div></div>`;
+  g+=`<div class="hzcell"><div class="l">Số quạt tunnel cần</div><div class="n">${fansNeed} <small>cái ×${fmt(o.fanUnit/1000,0)}k</small></div></div>`;
+  g+=`<div class="hzcell"><div class="l">Tấm làm mát</div><div class="n">${fmt(padArea,0)} <small>m² (${fmt(padLen,0)} m)</small></div></div>`;
+  g+=`<div class="hzcell"><div class="l">Quạt đã lắp → gió thực</div><div class="n">${fmt(vAchieved,2)} <small>m/s</small></div></div>`;
+  g+=`</div>`;
+  if(o.nFans < fansNeed){
+    g+=`<div class="warn w-amber" style="margin-top:12px"><span class="ic">~</span><span>Đang lắp <b>${o.nFans} quạt</b> ×${fmt(o.fanCap)} m³/h → chỉ đạt <b>${fmt(vAchieved,2)} m/s</b>, dưới thiết kế ${fmt(o.designV,1)} m/s. Muốn đạt cần <b>${fansNeed} quạt</b> loại ${fmt(o.fanUnit)} m³/h. Số quạt & tấm mát quyết định bởi <b>bề rộng nhà</b>, không đổi theo trọng lượng/số gà.</span></div>`;
+  } else {
+    g+=`<div class="warn w-ok" style="margin-top:12px"><span class="ic">✓</span><span>Quạt đã lắp (<b>${o.nFans}×${fmt(o.fanCap)}</b>) cho gió <b>${fmt(vAchieved,2)} m/s</b> ≥ thiết kế ${fmt(o.designV,1)} m/s. Số quạt & tấm mát cố định theo <b>bề rộng nhà</b> — không đổi theo trọng lượng/số gà.</span></div>`;
+  }
+
+  g+=`<div style="font-size:11px;color:var(--dim);font-family:var(--mono);letter-spacing:1px;text-transform:uppercase;margin:16px 0 8px">B · Theo đàn gà — ${fmt(o.N)} con × ${fmt(o.sw,1)} kg = ${fmt(maxLW)} kg · chỉ ảnh hưởng thông gió & inlet</div>`;
+  g+=`<table><thead><tr><th style="text-align:left">Hạng mục theo đàn</th><th>Giá trị</th><th style="text-align:left">Cách tính</th></tr></thead><tbody>`;
+  const rows=[
+    ['Thông gió nền (min-vent tối đa)', fmt(baseVent)+' m³/h', '3 m³/h/kg × thể trọng'],
+    ['Lưu lượng side inlet', fmt(sideAir)+' m³/h', '4 m³/h/kg × thể trọng'],
+    ['Số side inlet', nInlets+' cái', `⌈${fmt(sideAir)} ÷ ${fmt(o.inletType)}⌉ · cách ~${fmt(spacingSide,1)} m/cái`],
+    ['Ống inlet phân phối Ø'+fmt(o.pipeDia,0), nPipes+' ống', `${fmt(flowPipe,0)} m³/h/ống @ ${fmt(o.pipePa,0)} Pa · ~1 ống/${fmt(spacingPipe,0)} m² sàn`],
+  ];
+  rows.forEach(r=>{ g+=`<tr><td style="text-align:left">${r[0]}</td><td>${r[1]}</td><td style="text-align:left;color:var(--dim)">${r[2]}</td></tr>`; });
+  g+=`</tbody></table>`;
+  g+=`<div class="warn w-ok" style="margin-top:12px"><span class="ic">i</span><span><b>Chống điểm chết:</b> ${nInlets} side inlet đều hai bên (~${fmt(spacingSide,1)} m/cái) hoặc ${nPipes} ống Ø${fmt(o.pipeDia,0)} rải đều trần — càng nhiều điểm cấp nhỏ, phân phối càng đều, hợp chuồng trần thấp.</span></div>`;
+  b.innerHTML=g;
+}
+
+/* ---- Ghi nhớ cấu hình người dùng (localStorage) — TRỪ thời tiết (luôn lấy thời gian thực) ---- */
+const CFG_KEY='gaTrangCfg_v1';
+const CFG_IDS=['in-w','in-l','in-h','in-n','in-age','in-tinm','in-hinm','in-ratio','in-hzmin','in-fans','in-fancap','in-u','in-heatkg','in-cal','in-eff','in-price','in-press','in-gap','in-p0','in-qtest','in-pmax','in-designv','in-padv','in-sw','in-fanunit','in-inlettype','in-pipedia'];
+const LISTEN_IDS=CFG_IDS.concat(['in-tout','in-hout']);   // thời tiết vẫn kích hoạt tính lại nhưng KHÔNG lưu
+function saveCfg(){ try{ const o={}; CFG_IDS.forEach(id=>{const e=$(id); if(e) o[id]=e.value;}); localStorage.setItem(CFG_KEY, JSON.stringify(o)); }catch(e){} }
+function loadCfg(){ try{ const s=localStorage.getItem(CFG_KEY); if(!s) return; const o=JSON.parse(s); CFG_IDS.forEach(id=>{const e=$(id); if(e && o[id]!=null) e.value=o[id];}); }catch(e){} }
+loadCfg();
+const onChange=function(){ compute(); saveCfg(); };
+LISTEN_IDS.forEach(id=>{ const e=$(id); if(e) e.addEventListener('input',onChange); });
+compute();
+saveCfg();
+
+/* ---- Tự lấy thời tiết theo GPS (Open-Meteo, miễn phí) ---- */
+function fetchWeather(){
+  const st=$('wx-status'), btn=$('wx-btn');
+  if(!navigator.geolocation){ st.textContent='Trình duyệt không hỗ trợ định vị.'; st.className='wxstat err'; return; }
+  btn.disabled=true; st.textContent='Đang lấy vị trí…'; st.className='wxstat';
+  navigator.geolocation.getCurrentPosition(function(pos){
+    const lat=pos.coords.latitude.toFixed(4), lon=pos.coords.longitude.toFixed(4);
+    st.textContent='Đang lấy thời tiết…';
+    const url='https://api.open-meteo.com/v1/forecast?latitude='+lat+'&longitude='+lon+'&current=temperature_2m,relative_humidity_2m&timezone=auto';
+    fetch(url).then(r=>r.json()).then(function(d){
+      const c=d.current; if(!c||c.temperature_2m==null) throw new Error('no data');
+      $('in-tout').value=Math.round(c.temperature_2m*10)/10;
+      $('in-hout').value=Math.round(c.relative_humidity_2m);
+      compute();
+      const when=c.time?c.time.replace('T',' '):'';
+      st.innerHTML='✓ '+c.temperature_2m+'°C · '+c.relative_humidity_2m+'% RH — lúc '+when+' ('+lat+', '+lon+')';
+      st.className='wxstat ok';
+    }).catch(function(){ st.textContent='Không lấy được thời tiết (cần có mạng). Có thể nhập tay.'; st.className='wxstat err'; })
+      .finally(function(){ btn.disabled=false; });
+  }, function(err){
+    let m='Không lấy được vị trí.';
+    if(err.code===1) m='Bạn đã từ chối quyền định vị (hoặc mở bằng file offline). Nhập tay nhiệt độ/ẩm.';
+    else if(err.code===2) m='Vị trí không khả dụng.';
+    else if(err.code===3) m='Hết thời gian lấy vị trí.';
+    st.textContent=m; st.className='wxstat err'; btn.disabled=false;
+  }, {enableHighAccuracy:false, timeout:10000, maximumAge:600000});
+}
+(function(){ const b=$('wx-btn'); if(b) b.addEventListener('click',fetchWeather); })();
+fetchWeather();   // tự lấy thời tiết ngay khi mở app
+
+/* ---- Đăng ký service worker: cho phép chạy offline khi đã cài ---- */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('sw.js').catch(function(){});
+  });
+}
+
+</script>
+<script>
+/* chuyển tab */
+document.querySelectorAll('nav.tabbar button').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+    document.querySelectorAll('nav.tabbar button').forEach(function(b){b.classList.remove('on');});
+    var el=document.getElementById(btn.dataset.t);
+    if(el) el.classList.add('active');
+    btn.classList.add('on');
+    window.scrollTo(0,0);
+  });
+});
+</script>
+</body>
+</html>
